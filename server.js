@@ -93,8 +93,78 @@ function generateSpread (req, res) {
 
 app.get("/random", generateSpread);
 
+let nameArr = ["Peter", "Samantha", "Amin", "John", "Pat", "Joe"];
 
+// app.get("/queue/:type", (req, res) => {
+//     let type = req.params.type;
 
+//     if(type === "peek") {
+//         res.json({
+//             status: "success",
+//             data: nameArr[nameArr.length - 1]
+//         })
+//     } else if (type === "enqueue") {
+//         let name = req.query.name;
+//         if (!nameArr.includes(name)) {
+//             res.json({
+//                 status: "success",
+//                 enqued: name
+//             })
+//             nameArr.unshift(name)
+//         } else {
+//             res.json({
+//                 error: "That name is already in the array"
+//             })
+//         }
+//     } else if (type === "dequeue") {
+//         res.json({
+//             staus: "success",
+//             name: nameArr[nameArr.length - 1]
+//         })
+//         nameArr.pop()
+//     }
+// })
+
+function handleQueue(req, res) {
+    let type = req.params.type;
+
+    if(type === "peek") {
+        res.json({
+            status: "success",
+            name: nameArr[nameArr.length - 1]
+        })
+    } else if (type === "enqueue") {
+        let name = req.query.name;
+        if (!nameArr.includes(name)) {
+            nameArr.unshift(name);
+            res.json({
+                status: "success",
+                enqued: name,
+                message: `${name} has been added the que`,
+                currentArr: nameArr
+            })
+        } else {
+            res.json({
+                message: "That name is already in the que"
+            })
+        }
+    } else if (type === "dequeue") {
+        if(nameArr[0]) {
+        res.json({
+            staus: "success",
+            name: nameArr[nameArr.length - 1],
+            message: `${nameArr[nameArr.length - 1]} has been removed from the queue`
+        })
+        nameArr.pop()
+        } else {
+            res.json({
+                message: `This queue is empty`
+            })
+        }
+    }
+}
+
+app.get("/queue/:type", handleQueue)
 
 app.listen(port, () => {
     console.log(`Server is running at port ${port}`);

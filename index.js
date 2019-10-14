@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let randomButton = document.getElementById("randomButton");
     randomButton.addEventListener("click", getRandom);
+
+    let peekButton = document.getElementById("peekButton");
+    peekButton.addEventListener("click", peekAtArray);
+
+    let enqueueButton = document.getElementById("enqueueButton");
+    enqueueButton.addEventListener("click", addToQueue);
+
+    let dequeueButton = document.getElementById("dequeue");
+    dequeueButton.addEventListener("click", removeFirstName)
 })
 
 function isAnimal(event) {
@@ -45,5 +54,48 @@ function getRandom(event) {
         p.innerText = `A random number between ${floorValue} and ${ceilValue} is ${response.data.randPick}`;
         randomForm.append(p);
     })
+}
 
+function peekAtArray(event) {
+    event.preventDefault();
+
+    let queueForm = document.getElementById("queueForm");
+
+    axios.get(`http://localhost:3000/queue/peek`)
+    .then(function (response) {
+        let p = document.createElement("p");
+        console.log(response.data)
+        p.innerText = `${response.data.name} is the next person in the queue.`
+        queueForm.appendChild(p);
+    })
+}
+
+function addToQueue(event) {
+    event.preventDefault();
+    
+    let nameInput = document.getElementById("nameInput");
+    let nameValue = nameInput.value;
+
+    let queueForm = document.getElementById("queueForm")
+
+    axios.get(`http://localhost:3000/queue/enqueue?name=${nameValue}`)
+    .then(function (response) {
+        let p = document.createElement("p");
+        p.innerText = response.data.message;
+        queueForm.appendChild(p);
+        console.log(response.data.currentArr)
+    })
+}
+
+function removeFirstName(event) {
+    event.preventDefault();
+
+    let queueForm = document.getElementById("queueForm");
+
+    axios.get(`http://localhost:3000/queue/dequeue`)
+    .then(function (response){
+        let p = document.createElement("p");
+        p.innerText = response.data.message;
+        queueForm.appendChild(p);
+    })
 }
