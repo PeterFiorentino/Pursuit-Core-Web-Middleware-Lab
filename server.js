@@ -23,13 +23,10 @@ let animalArr = ["zebra", "dog", "cat", "snake", "lion", "monkey"];
 //         })
 //     }
 // })
-function isAnimal(req, res) {
+function isAnimal(req, res, next) {
     let species = req.params.species;
         if(animalArr.includes(species)) {
-            res.json({
-                status: "success",
-                message: true
-            })
+            next();
         } else {
             res.json({
                 staus: "failed",
@@ -38,7 +35,14 @@ function isAnimal(req, res) {
         }
 }
 
-app.get("/animal/:species", isAnimal)
+function returnAnimal (req, res) {
+    res.json({
+        status: "success",
+        message: true
+    })
+}
+
+app.get("/animal/:species", isAnimal, returnAnimal)
 
 
 // app.get("/random", (req, res) => {
